@@ -1,52 +1,158 @@
-import { View, Text } from 'react-native'
-import React, { useEffect } from 'react'
-import { useNavigation } from 'expo-router'
-import { TextInput } from 'react-native-web';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { useRouter } from 'expo-router';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
-export default function Entrae() {
 
-  const navigator = useNavigation(); // Renomeado para 'navigator'
+export default function Entrar() {
+  const router = useRouter();
+  const [senha, setSenha] = useState('');
+  const [email, setEmail] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
-  useEffect(() => {
-    navigator.setOptions({ // Usando 'navigator' no lugar de 'navigation'
-      headerShown: false,
-    });
-  }, [navigator]); // Adicionando dependência para evitar loop infinito
 
   return (
-    <View style={{ padding: 25, 
-      paddingTop: 50,
-      backgroundColor: '#FFFF',
-      height: '100%'
-    }}>
-      <Text style= {{
-        fontFamily:'Outift-bold.ttf',
-        fontSize:30
-      }}
-      
-      > Vamos fazer login</Text>
+    <View style={styles.container}>
+      {/* Botão de Voltar */}
+      <Ionicons 
+        name="arrow-back" 
+        size={24} 
+        color="black" 
+        onPress={() => router.back()} // Navegar para a página anterior
+        style={styles.backIcon}
+      />
 
-    <Text style= {{
-        fontFamily:'Outift-Medium.ttf',
-        fontSize:30,
-        color: '#808080',
-        marginTop: 30
-      }}  
-      > Bem-Vindo de Volta</Text>
+      <Text style={styles.title}>Vamos fazer login</Text>
+      <Text style={styles.subtitle}>Bem-Vindo de Volta</Text>
+      <Text style={styles.subtitle}>Você Fez Falta!</Text>
 
-     <Text style= {{
-        fontFamily:'Outift-Medium.ttf',
-        fontSize:30,
-        color: '#808080',
-        marginTop:20
-      }}    
-      > Você Fez Falta!</Text>
-      
-      <View>
-        <Text>Email</Text>
-       <TextInput placeholder='Enter email'></TextInput>
+      {/* Input de Email */}
+      <View style={styles.inputGroup}>
+        <Text style={styles.label}>Email</Text>
+        <TextInput 
+          style={styles.input}
+          placeholder='Enter Email'
+          keyboardType='email-address'
+          autoCapitalize='none'
+          value={email}
+          onChangeText={setEmail}
+        />
       </View>
 
+      {/* Input de Senha com Ícone */}
+      <View style={styles.inputGroup}>
+        <Text style={styles.label}>Senha</Text>
+        <View style={styles.passwordContainer}>
+          <TextInput 
+            style={styles.inputPassword}
+            placeholder='Senha'
+            secureTextEntry={!showPassword}
+            value={senha}
+            onChangeText={setSenha}
+          />
+          <Ionicons
+            name={showPassword ? 'eye' : 'eye-off'}
+            size={24}
+            color='gray'
+            onPress={() => setShowPassword(!showPassword)}
+            style={styles.icon}
+          />
+        </View>
+      </View>
+
+      {/* Botão Entrar */}
+      <TouchableOpacity 
+        style={styles.buttonPrimary}
+        onPress={() => router.push('/auth/sign-in')} // Rota corrigida
+      >
+        <Text style={styles.buttonText}>Entrar</Text>
+      </TouchableOpacity>
+
+      {/* Botão Criar Conta */}
+      <TouchableOpacity 
+        style={styles.buttonSecondary}
+        onPress={() => router.push('/auth/sign-up')} // Rota corrigida
+      >
+        <Text style={styles.buttonText}>Criar a Conta</Text>
+      </TouchableOpacity>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    padding: 25,
+    paddingTop: 50,
+    backgroundColor: '#FFFFFF',
+    height: '100%',
+  },
+  backIcon: {
+    marginBottom: 20,
+  },
+  title: {
+    fontFamily: 'Outfit-Bold',
+    fontSize: 30,
+    marginBottom: 10,
+  },
+  subtitle: {
+    fontFamily: 'Outfit-Medium',
+    fontSize: 25,
+    color: '#808080',
+    marginTop: 10,
+    marginBottom: 5,
+  },
+  inputGroup: {
+    marginTop: 30,
+  },
+  label: {
+    fontFamily: 'Outfit-Medium',
+    fontSize: 16,
+    marginBottom: 8,
+    color: '#333',
+  },
+  input: {
+    height: 50,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 10,
+    paddingLeft: 10,
+    fontFamily: 'Outfit-Regular',
+    backgroundColor: '#F9F9F9',
+  },
+  passwordContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 10,
+    backgroundColor: '#F9F9F9',
+    paddingRight: 10,
+  },
+  inputPassword: {
+    flex: 1,
+    height: 50,
+    paddingLeft: 10,
+    fontFamily: 'Outfit-Regular',
+  },
+  icon: {
+    padding: 10,
+  },
+  buttonPrimary: {
+    padding: 20,
+    backgroundColor: '#000000',
+    borderRadius: 15,
+    marginTop: 50,
+  },
+  buttonSecondary: {
+    padding: 20,
+    backgroundColor: '#A9A9A9',
+    borderRadius: 15,
+    marginTop: 20,
+  },
+  buttonText: {
+    color: '#FFFFFF',
+    textAlign: 'center',
+    fontFamily: 'Outfit-Medium',
+    fontSize: 18,
+  },
+});
